@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<title>Irregular Verbs MK25750</title>
+<style>
+    body { font-family: Arial; padding: 20px; }
+    h2 { margin-bottom: 15px; }
+    .columns { display: flex; gap: 15px; margin-bottom: 15px; }
+    .box { display: flex; flex-direction: column; }
+    input { padding: 6px; font-size: 14px; width: 130px; }
+    span { padding: 6px; font-weight: bold; }
+    button { padding: 8px 15px; margin-right: 10px; }
+    .result { margin-top: 15px; font-weight: bold; }
+    .error { color: red; }
+    .correct { color: green; }
+</style>
+</head>
+<body>
+
+<h2>Irregular Verbs MK25750</h2>
+
+<div class="columns">
+    <div class="box"><span id="baseBox"></span><input id="baseInput"></div>
+    <div class="box"><span id="pastBox"></span><input id="pastInput"></div>
+    <div class="box"><span id="partBox"></span><input id="partInput"></div>
+    <div class="box"><span id="catBox"></span><input id="catInput"></div>
+</div>
+
+<button onclick="checkAnswer()">Comprovar</button>
+<button onclick="newQuestion()">Nova pregunta</button>
+
+<div class="result" id="result"></div>
+
+<script>
+const verbs = [
+{base:"set", past:"set", part:"set", cat:"col·locar"},
+{base:"shake", past:"shook", part:"shaken", cat:"sacsejar"},
+{base:"shine", past:"shone", part:"shone", cat:"brillar"},
+{base:"shoot", past:"shot", part:"shot", cat:"disparar"},
+{base:"show", past:"showed", part:"shown", cat:"mostrar"},
+{base:"shut", past:"shut", part:"shut", cat:"tancar"},
+{base:"sing", past:"sang", part:"sung", cat:"cantar"},
+{base:"sink", past:"sank", part:"sunk", cat:"enfonsar-se"},
+{base:"sit", past:"sat", part:"sat", cat:"seure"},
+{base:"sleep", past:"slept", part:"slept", cat:"dormir"},
+{base:"smell", past:["smelt","smelled"], part:["smelt","smelled"], cat:"olorar"},
+{base:"speak", past:"spoke", part:"spoken", cat:"parlar"},
+{base:"spell", past:["spelt","spelled"], part:["spelt","spelled"], cat:"lletrejar"},
+{base:"spend", past:"spent", part:"spent", cat:"gastar"},
+{base:"stand", past:"stood", part:"stood", cat:"estar dret"},
+{base:"steal", past:"stole", part:"stolen", cat:"robar"},
+{base:"stick", past:"stuck", part:"stuck", cat:"enganxar"},
+{base:"sting", past:"stung", part:"stung", cat:"picar"},
+{base:"sweep", past:"swept", part:"swept", cat:"escombrar"},
+{base:"swim", past:"swam", part:"swum", cat:"nedar"},
+{base:"take", past:"took", part:"taken", cat:"agafar"},
+{base:"teach", past:"taught", part:"taught", cat:"ensenyar"},
+{base:"tear", past:"tore", part:"torn", cat:"estripar"},
+{base:"tell", past:"told", part:"told", cat:"dir"},
+{base:"think", past:"thought", part:"thought", cat:"pensar"},
+{base:"throw", past:"threw", part:"thrown", cat:"llençar"},
+{base:"understand", past:"understood", part:"understood", cat:"entendre"},
+{base:"wake up", past:"woke up", part:"woken up", cat:"despertar"},
+{base:"wear", past:"wore", part:"worn", cat:"portar"},
+{base:"win", past:"won", part:"won", cat:"guanyar"},
+{base:"write", past:"wrote", part:"written", cat:"escriure"}
+];
+
+let currentVerb;
+let givenField;
+
+function clearAll() {
+    ["base","past","part","cat"].forEach(f=>{
+        document.getElementById(f+"Input").value="";
+        document.getElementById(f+"Input").disabled=false;
+        document.getElementById(f+"Box").innerText="";
+    });
+}
+
+function newQuestion() {
+    clearAll();
+    document.getElementById("result").innerHTML="";
+
+    currentVerb = verbs[Math.floor(Math.random()*verbs.length)];
+    const fields = ["base","past","part"];
+    givenField = fields[Math.floor(Math.random()*fields.length)];
+
+    let value = currentVerb[givenField];
+    if(Array.isArray(value)) value = value[0];
+
+    document.getElementById(givenField+"Box").innerText = value;
+    document.getElementById(givenField+"Input").disabled = true;
+}
+
+function checkAnswer() {
+    let errors = [];
+
+    ["base","past","part","cat"].forEach(field=>{
+        if(field!==givenField){
+            let user = document.getElementById(field+"Input").value.trim().toLowerCase();
+            let correct = currentVerb[field];
+
+            if(Array.isArray(correct)){
+                if(!correct.includes(user)){
+                    errors.push(field + " → " + correct.join(" / "));
+                }
+            } else {
+                if(user!==correct){
+                    errors.push(field + " → " + correct);
+                }
+            }
+        }
+    });
+
+    if(errors.length===0){
+        document.getElementById("result").innerHTML = "<span class='correct'>✅ Correcte!</span>";
+    } else {
+        document.getElementById("result").innerHTML = 
+        "<span class='error'>❌ Has fallat:</span><br>" + errors.join("<br>");
+    }
+}
+
+newQuestion();
+</script>
+
+</body>
+</html>
